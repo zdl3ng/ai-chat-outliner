@@ -15,7 +15,7 @@ function getQuestionText(element) {
   const questionElement = element.parentNode.previousElementSibling;
   if (!questionElement) return '';
   const text = questionElement.textContent.trim();
-  return text.length > 10 ? text.slice(0, 10) + '...' : text;
+  return text.length > 25 ? text.slice(0, 25) + '...' : text;
 }
 
 // 获取回复中的 h3 标题

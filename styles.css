@@ -2,7 +2,7 @@
   position: fixed;
   right: 20px;
   top: 80px;
-  width: 250px;
+  width: 300px;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
   background: #fff;
@@ -62,18 +62,28 @@
   cursor: pointer;
   flex: 1;
   transition: color 0.2s;
+  font-weight: normal;
+  font-size: 15px;
+  color: #333;
 }
 
-.outline-question .question-text:hover {
+.outline-question .question-text:hover,
+.outline-question.outline-active .question-text {
   color: #4D6BFE;
 }
 
+.outline-question .question-text:hover {
+  opacity: 0.8;
+}
+
 .outline-h3 {
-  padding-left: 28px;
+  padding: 4px 8px 4px 28px;
+  margin-left: 12px;
   color: #888;
   font-size: 13px;
   cursor: pointer;
   transition: color 0.2s;
+  border-left: 2px solid #eee;
 }
 
 .outline-h3:hover {
@@ -85,6 +95,6 @@
 }
 
 .outline-active {
-  color: #4D6BFE;
+  color: #4D6BFE !important;
   font-weight: bold;
 }
