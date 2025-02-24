@@ -13,10 +13,48 @@
   font-size: 14px;
 }
 
+.outline-header {
+  position: sticky;
+  top: -16px;
+  background: #fff;
+  padding: 16px 0 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: -16px -16px 12px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
 .outline-title {
   font-weight: bold;
-  margin-bottom: 12px;
   color: #333;
+}
+
+.outline-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.outline-controls span {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  color: #666;
+  font-size: 16px;
+  transition: all 0.2s;
+  border: 1px solid #eee;
+}
+
+.outline-controls span:hover {
+  background-color: rgba(77, 107, 254, 0.1);
+  color: #4D6BFE;
 }
 
 .outline-list {

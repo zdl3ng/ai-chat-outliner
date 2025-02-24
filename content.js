@@ -3,9 +3,41 @@ function createOutlineContainer() {
   const container = document.createElement('div');
   container.className = 'outline-container';
   container.innerHTML = `
-    <div class="outline-title">对话目录</div>
+    <div class="outline-header">
+      <div class="outline-title">对话目录</div>
+      <div class="outline-controls">
+        <span class="outline-toggle-all" title="全部展开">+</span>
+      </div>
+    </div>
     <ul class="outline-list"></ul>
   `;
+
+  // 添加全局展开/折叠事件监听
+  const toggleAllBtn = container.querySelector('.outline-toggle-all');
+  let isExpanded = false;
+
+  toggleAllBtn.addEventListener('click', () => {
+    isExpanded = !isExpanded;
+    toggleAllBtn.textContent = isExpanded ? '-' : '+';
+    toggleAllBtn.title = isExpanded ? '全部折叠' : '全部展开';
+
+    container.querySelectorAll('.outline-question').forEach(item => {
+      if (isExpanded) {
+        item.classList.remove('collapsed');
+        const titlesList = item.nextElementSibling;
+        Array.from(titlesList.children).forEach(child => {
+          child.classList.remove('hidden');
+        });
+      } else {
+        item.classList.add('collapsed');
+        const titlesList = item.nextElementSibling;
+        Array.from(titlesList.children).forEach(child => {
+          child.classList.add('hidden');
+        });
+      }
+    });
+  });
+
   document.body.appendChild(container);
   return container;
 }
