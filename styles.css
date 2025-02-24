@@ -27,37 +27,57 @@
 
 .outline-item {
   margin: 8px 0;
-  cursor: pointer;
-}
-
-.outline-item:hover {
-  color: #4D6BFE;
 }
 
 .outline-question {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   color: #666;
 }
 
 .outline-question .toggle {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  color: #999;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.outline-question .toggle:hover {
+  background-color: rgba(77, 107, 254, 0.1);
+  color: #4D6BFE;
 }
 
 .outline-question.collapsed .toggle {
   transform: rotate(-90deg);
 }
 
+.outline-question .question-text {
+  cursor: pointer;
+  flex: 1;
+  transition: color 0.2s;
+}
+
+.outline-question .question-text:hover {
+  color: #4D6BFE;
+}
+
 .outline-h3 {
-  padding-left: 20px;
+  padding-left: 28px;
   color: #888;
   font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.outline-h3:hover {
+  color: #4D6BFE;
 }
 
 .outline-h3.hidden {

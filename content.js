@@ -35,8 +35,8 @@ function createOutlineItem(question, titles, responseElement) {
   const questionDiv = document.createElement('div');
   questionDiv.className = 'outline-question';
   questionDiv.innerHTML = `
-    <span class="toggle">▼</span>
-    <span>${question}</span>
+    <span class="toggle">›</span>
+    <span class="question-text">${question}</span>
   `;
   
   // 创建标题列表
@@ -54,16 +54,25 @@ function createOutlineItem(question, titles, responseElement) {
     titlesList.appendChild(titleDiv);
   });
   
-  // 添加问题点击事件
-  questionDiv.addEventListener('click', () => {
-    // 切换折叠状态
+  // 添加展开/折叠图标点击事件
+  const toggleButton = questionDiv.querySelector('.toggle');
+  toggleButton.addEventListener('click', (e) => {
+    e.stopPropagation();
     questionDiv.classList.toggle('collapsed');
     Array.from(titlesList.children).forEach(child => {
       child.classList.toggle('hidden');
     });
-    // 滚动到回复位置
-    responseElement.scrollIntoView({ behavior: 'smooth' });
-    updateActiveState(questionDiv);
+  });
+
+  // 添加问题文本点击事件
+  const questionText = questionDiv.querySelector('.question-text');
+  questionText.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const questionElement = responseElement.parentNode.previousElementSibling;
+    if (questionElement) {
+      questionElement.scrollIntoView({ behavior: 'smooth' });
+      updateActiveState(questionDiv);
+    }
   });
   
   li.appendChild(questionDiv);
