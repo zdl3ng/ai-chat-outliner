@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Deepseek Chat Outline",
+  "version": "1.0",
+  "description": "为 Deepseek 聊天页面生成目录导航，优化长对话的浏览体验",
+  "icons": {
+    "48": "icon48.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://chat.deepseek.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "permissions": ["activeTab"]
+}
