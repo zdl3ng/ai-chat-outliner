@@ -15,7 +15,7 @@ function getQuestionText(element) {
   const questionElement = element.parentNode.previousElementSibling;
   if (!questionElement) return '';
   const text = questionElement.textContent.trim();
-  return text.length > 25 ? text.slice(0, 25) + '...' : text;
+  return text;
 }
 
 // 获取回复中的 h3 标题
@@ -36,7 +36,7 @@ function createOutlineItem(question, titles, responseElement) {
   questionDiv.className = 'outline-question';
   questionDiv.innerHTML = `
     <span class="toggle">›</span>
-    <span class="question-text">${question}</span>
+    <span class="question-text" title="${question}">${question}</span>
   `;
   
   // 创建标题列表
@@ -46,6 +46,7 @@ function createOutlineItem(question, titles, responseElement) {
     const titleDiv = document.createElement('div');
     titleDiv.className = 'outline-h3';
     titleDiv.textContent = text;
+    titleDiv.title = text;
     titleDiv.addEventListener('click', (e) => {
       e.stopPropagation();
       element.scrollIntoView({ behavior: 'smooth' });
