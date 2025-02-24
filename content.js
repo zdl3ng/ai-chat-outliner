@@ -28,12 +28,18 @@ function createOutlineContainer() {
         Array.from(titlesList.children).forEach(child => {
           child.classList.remove('hidden');
         });
+        const toggleButton = item.querySelector('.toggle');
+        toggleButton.textContent = '-';
+        toggleButton.title = '折叠';
       } else {
         item.classList.add('collapsed');
         const titlesList = item.nextElementSibling;
         Array.from(titlesList.children).forEach(child => {
           child.classList.add('hidden');
         });
+        const toggleButton = item.querySelector('.toggle');
+        toggleButton.textContent = '+';
+        toggleButton.title = '展开';
       }
     });
   });
@@ -67,7 +73,7 @@ function createOutlineItem(question, titles, responseElement) {
   const questionDiv = document.createElement('div');
   questionDiv.className = 'outline-question';
   questionDiv.innerHTML = `
-    <span class="toggle">›</span>
+    <span class="toggle">+</span>
     <span class="question-text" title="${question}">${question}</span>
   `;
   
@@ -89,12 +95,30 @@ function createOutlineItem(question, titles, responseElement) {
   
   // 添加展开/折叠图标点击事件
   const toggleButton = questionDiv.querySelector('.toggle');
+  const updateToggleButton = (isCollapsed) => {
+    toggleButton.textContent = isCollapsed ? '+' : '-';
+    toggleButton.title = isCollapsed ? '展开' : '折叠';
+  };
+
+  // 设置初始状态
+  updateToggleButton(true);
+
   toggleButton.addEventListener('click', (e) => {
     e.stopPropagation();
+    const willBeCollapsed = !questionDiv.classList.contains('collapsed');
     questionDiv.classList.toggle('collapsed');
     Array.from(titlesList.children).forEach(child => {
       child.classList.toggle('hidden');
     });
+    updateToggleButton(willBeCollapsed);
+
+    // 更新顶部按钮状态
+    const container = document.querySelector('.outline-container');
+    const allQuestions = container.querySelectorAll('.outline-question');
+    const allExpanded = Array.from(allQuestions).every(q => !q.classList.contains('collapsed'));
+    const toggleAllBtn = container.querySelector('.outline-toggle-all');
+    toggleAllBtn.textContent = allExpanded ? '-' : '+';
+    toggleAllBtn.title = allExpanded ? '全部折叠' : '全部展开';
   });
 
   // 添加问题文本点击事件
@@ -138,6 +162,13 @@ function updateOutline() {
     const titles = getH3Titles(response);
     if (question) {
       const item = createOutlineItem(question, titles, response);
+      // 设置初始折叠状态
+      const questionDiv = item.querySelector('.outline-question');
+      questionDiv.classList.add('collapsed');
+      const titlesList = item.querySelector('.outline-h3-list');
+      Array.from(titlesList.children).forEach(child => {
+        child.classList.add('hidden');
+      });
       list.appendChild(item);
     }
   });
