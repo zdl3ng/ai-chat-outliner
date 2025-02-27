@@ -163,30 +163,71 @@ function updateOutline() {
     if (question) {
       const item = createOutlineItem(question, titles, response);
       // 设置初始折叠状态
-      const questionDiv = item.querySelector('.outline-question');
-      questionDiv.classList.add('collapsed');
-      const titlesList = item.querySelector('.outline-h3-list');
-      Array.from(titlesList.children).forEach(child => {
-        child.classList.add('hidden');
-      });
+      // const questionDiv = item.querySelector('.outline-question');
+      // questionDiv.classList.add('collapsed');
+      // const titlesList = item.querySelector('.outline-h3-list');
+      // Array.from(titlesList.children).forEach(child => {
+      //   child.classList.add('hidden');
+      // });
       list.appendChild(item);
     }
   });
 }
 
+// 创建防抖函数
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// 使用防抖包装更新函数
+const debouncedUpdateOutline = debounce(updateOutline, 1000);
+
 // 创建观察器
 const observer = new MutationObserver((mutations) => {
   const hasContentChange = mutations.some(mutation => {
-    return Array.from(mutation.addedNodes).some(node => 
-      node.nodeType === 1 && (
-        node.classList?.contains('ds-markdown') ||
-        node.querySelector?.('.ds-markdown')
-      )
-    );
+    // 检查新增节点
+    const hasAddedChange = Array.from(mutation.addedNodes).some(node => {
+      if (node.nodeType !== 1) return false;
+      
+      // 递归向上查找父节点，检查是否包含目标类名
+      let current = node;
+      while (current && current !== document.body) {
+        if (current.classList?.contains('ds-markdown')) {
+          return true;
+        }
+        current = current.parentNode;
+      }
+      return false;
+    });
+
+    // 检查移除节点
+    const hasRemovedChange = Array.from(mutation.removedNodes).some(node => {
+      if (node.nodeType !== 1) return false;
+      
+      // 递归向上查找父节点，检查是否包含目标类名
+      let current = node;
+      while (current && current !== document.body) {
+        if (current.classList?.contains('ds-markdown')) {
+          return true;
+        }
+        current = current.parentNode;
+      }
+      return false;
+    });
+
+    return hasAddedChange || hasRemovedChange;
   });
   
   if (hasContentChange) {
-    updateOutline();
+    debouncedUpdateOutline();
   }
 });
 
@@ -196,4 +237,4 @@ const targetNode = document.body;
 observer.observe(targetNode, config);
 
 // 初始化目录
-updateOutline();
+debouncedUpdateOutline();
