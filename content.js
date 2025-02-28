@@ -17,13 +17,13 @@ function createOutlineContainer() {
   // 初始化时检查所有问题的展开状态
   const updateExpandedState = () => {
     const allQuestions = container.querySelectorAll('.outline-question');
-    isExpanded = Array.from(allQuestions).every(q => !q.classList.contains('collapsed'));
+    isExpanded = Array.from(allQuestions).some(q => !q.classList.contains('collapsed'));
     toggleAllBtn.textContent = isExpanded ? '-' : '+';
     toggleAllBtn.title = isExpanded ? '全部折叠' : '全部展开';
   };
   toggleAllBtn.addEventListener('click', () => {
     const allQuestions = container.querySelectorAll('.outline-question');
-    isExpanded = Array.from(allQuestions).every(q => !q.classList.contains('collapsed'));
+    isExpanded = Array.from(allQuestions).some(q => !q.classList.contains('collapsed'));
     isExpanded = !isExpanded;
     toggleAllBtn.textContent = isExpanded ? '-' : '+';
     toggleAllBtn.title = isExpanded ? '全部折叠' : '全部展开';
@@ -117,10 +117,10 @@ function createOutlineItem(question, titles, responseElement) {
   // 更新顶部按钮状态
     const container = document.querySelector('.outline-container');
     const allQuestions = container.querySelectorAll('.outline-question');
-    const allExpanded = Array.from(allQuestions).every(q => !q.classList.contains('collapsed'));
+    const isExpanded = Array.from(allQuestions).some(q => !q.classList.contains('collapsed'));
     const toggleAllBtn = container.querySelector('.outline-toggle-all');
-    toggleAllBtn.textContent = allExpanded ? '-' : '+';
-    toggleAllBtn.title = allExpanded ? '全部折叠' : '全部展开';
+    toggleAllBtn.textContent = isExpanded ? '-' : '+';
+    toggleAllBtn.title = isExpanded ? '全部折叠' : '全部展开';
   });
   // 添加问题文本点击事件
   const questionText = questionDiv.querySelector('.question-text');
@@ -214,7 +214,7 @@ function updateOutline() {
   // 更新顶部按钮状态
   const updateExpandedState = () => {
     const allQuestions = container.querySelectorAll('.outline-question');
-    const isExpanded = Array.from(allQuestions).every(q => !q.classList.contains('collapsed'));
+    const isExpanded = Array.from(allQuestions).some(q => !q.classList.contains('collapsed'));
     const toggleAllBtn = container.querySelector('.outline-toggle-all');
     toggleAllBtn.textContent = isExpanded ? '-' : '+';
     toggleAllBtn.title = isExpanded ? '全部折叠' : '全部展开';
