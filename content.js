@@ -16,6 +16,14 @@ function createOutlineContainer() {
   const toggleAllBtn = container.querySelector('.outline-toggle-all');
   let isExpanded = false;
 
+  // 初始化时检查所有问题的展开状态
+  const updateExpandedState = () => {
+    const allQuestions = container.querySelectorAll('.outline-question');
+    isExpanded = Array.from(allQuestions).every(q => !q.classList.contains('collapsed'));
+    toggleAllBtn.textContent = isExpanded ? '-' : '+';
+    toggleAllBtn.title = isExpanded ? '全部折叠' : '全部展开';
+  };
+
   toggleAllBtn.addEventListener('click', () => {
     isExpanded = !isExpanded;
     toggleAllBtn.textContent = isExpanded ? '-' : '+';
@@ -119,8 +127,8 @@ function createOutlineItem(question, titles, responseElement) {
     const toggleAllBtn = container.querySelector('.outline-toggle-all');
     toggleAllBtn.textContent = allExpanded ? '-' : '+';
     toggleAllBtn.title = allExpanded ? '全部折叠' : '全部展开';
+    isExpanded = allExpanded; // 同步更新 isExpanded 变量
   });
-
   // 添加问题文本点击事件
   const questionText = questionDiv.querySelector('.question-text');
   questionText.addEventListener('click', (e) => {
@@ -153,23 +161,58 @@ function updateOutline() {
   const list = container.querySelector('.outline-list');
   const responses = document.querySelectorAll('.ds-markdown.ds-markdown--block');
   
-  // 清空现有目录
-  list.innerHTML = '';
+  // 获取现有目录项的信息
+  const existingItems = Array.from(list.children).map(item => {
+    const questionText = item.querySelector('.question-text').textContent;
+    const titles = Array.from(item.querySelector('.outline-h3-list').children).map(h3 => h3.textContent);
+    return { questionText, titles };
+  });
   
   // 生成新目录
   responses.forEach(response => {
     const question = getQuestionText(response);
     const titles = getH3Titles(response);
+    
     if (question) {
-      const item = createOutlineItem(question, titles, response);
-      // 设置初始折叠状态
-      // const questionDiv = item.querySelector('.outline-question');
-      // questionDiv.classList.add('collapsed');
-      // const titlesList = item.querySelector('.outline-h3-list');
-      // Array.from(titlesList.children).forEach(child => {
-      //   child.classList.add('hidden');
-      // });
-      list.appendChild(item);
+      // 检查是否已存在相同的问题
+      const existingItem = existingItems.find(item => item.questionText === question);
+      
+      if (!existingItem) {
+        // 如果是新问题，直接添加
+        const item = createOutlineItem(question, titles, response);
+        list.appendChild(item);
+      } else {
+        // 如果问题已存在，检查标题是否有变化
+        const newTitles = titles.map(t => t.text);
+        const hasNewTitles = newTitles.some(title => !existingItem.titles.includes(title));
+        
+        if (hasNewTitles) {
+          // 如果有新标题，更新整个问题项
+          const oldItem = Array.from(list.children).find(
+            li => li.querySelector('.question-text').textContent === question
+          );
+          const newItem = createOutlineItem(question, titles, response);
+          
+          // 保持展开/折叠状态
+          if (oldItem.querySelector('.outline-question').classList.contains('collapsed')) {
+            newItem.querySelector('.outline-question').classList.add('collapsed');
+            Array.from(newItem.querySelector('.outline-h3-list').children).forEach(child => {
+              child.classList.add('hidden');
+            });
+          }
+          
+          list.replaceChild(newItem, oldItem);
+        }
+      }
+    }
+  });
+  
+  // 移除不再存在的问题
+  const currentQuestions = Array.from(responses).map(response => getQuestionText(response));
+  Array.from(list.children).forEach(item => {
+    const questionText = item.querySelector('.question-text').textContent;
+    if (!currentQuestions.includes(questionText)) {
+      list.removeChild(item);
     }
   });
 }
