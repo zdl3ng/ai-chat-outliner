@@ -6,16 +6,14 @@ function createOutlineContainer() {
     <div class="outline-header">
       <div class="outline-title">对话目录</div>
       <div class="outline-controls">
-        <span class="outline-toggle-all" title="全部展开">+</span>
+        <span class="outline-toggle-all" title="全部折叠">-</span>
       </div>
     </div>
     <ul class="outline-list"></ul>
   `;
-
   // 添加全局展开/折叠事件监听
   const toggleAllBtn = container.querySelector('.outline-toggle-all');
-  let isExpanded = false;
-
+  let isExpanded = true;
   // 初始化时检查所有问题的展开状态
   const updateExpandedState = () => {
     const allQuestions = container.querySelectorAll('.outline-question');
@@ -23,35 +21,34 @@ function createOutlineContainer() {
     toggleAllBtn.textContent = isExpanded ? '-' : '+';
     toggleAllBtn.title = isExpanded ? '全部折叠' : '全部展开';
   };
-
   toggleAllBtn.addEventListener('click', () => {
+    const allQuestions = container.querySelectorAll('.outline-question');
+    isExpanded = Array.from(allQuestions).every(q => !q.classList.contains('collapsed'));
     isExpanded = !isExpanded;
     toggleAllBtn.textContent = isExpanded ? '-' : '+';
     toggleAllBtn.title = isExpanded ? '全部折叠' : '全部展开';
-
     container.querySelectorAll('.outline-question').forEach(item => {
-      if (isExpanded) {
-        item.classList.remove('collapsed');
-        const titlesList = item.nextElementSibling;
-        Array.from(titlesList.children).forEach(child => {
-          child.classList.remove('hidden');
-        });
-        const toggleButton = item.querySelector('.toggle');
-        toggleButton.textContent = '-';
-        toggleButton.title = '折叠';
-      } else {
-        item.classList.add('collapsed');
-        const titlesList = item.nextElementSibling;
-        Array.from(titlesList.children).forEach(child => {
-          child.classList.add('hidden');
-        });
-        const toggleButton = item.querySelector('.toggle');
-        toggleButton.textContent = '+';
-        toggleButton.title = '展开';
-      }
-    });
+    if (isExpanded) {
+      item.classList.remove('collapsed');
+      const titlesList = item.nextElementSibling;
+      Array.from(titlesList.children).forEach(child => {
+        child.classList.remove('hidden');
+      });
+      const toggleButton = item.querySelector('.toggle');
+      toggleButton.textContent = '-';
+      toggleButton.title = '折叠';
+    } else {
+      item.classList.add('collapsed');
+      const titlesList = item.nextElementSibling;
+      Array.from(titlesList.children).forEach(child => {
+        child.classList.add('hidden');
+      });
+      const toggleButton = item.querySelector('.toggle');
+      toggleButton.textContent = '+';
+      toggleButton.title = '展开';
+    }
   });
-
+  });
   document.body.appendChild(container);
   return container;
 }
@@ -81,7 +78,7 @@ function createOutlineItem(question, titles, responseElement) {
   const questionDiv = document.createElement('div');
   questionDiv.className = 'outline-question';
   questionDiv.innerHTML = `
-    <span class="toggle">+</span>
+    <span class="toggle">-</span>
     <span class="question-text" title="${question}">${question}</span>
   `;
   
@@ -107,10 +104,8 @@ function createOutlineItem(question, titles, responseElement) {
     toggleButton.textContent = isCollapsed ? '+' : '-';
     toggleButton.title = isCollapsed ? '展开' : '折叠';
   };
-
-  // 设置初始状态
-  updateToggleButton(true);
-
+  // 设置初始状态为展开
+  updateToggleButton(false);
   toggleButton.addEventListener('click', (e) => {
     e.stopPropagation();
     const willBeCollapsed = !questionDiv.classList.contains('collapsed');
@@ -119,15 +114,13 @@ function createOutlineItem(question, titles, responseElement) {
       child.classList.toggle('hidden');
     });
     updateToggleButton(willBeCollapsed);
-
-    // 更新顶部按钮状态
+  // 更新顶部按钮状态
     const container = document.querySelector('.outline-container');
     const allQuestions = container.querySelectorAll('.outline-question');
     const allExpanded = Array.from(allQuestions).every(q => !q.classList.contains('collapsed'));
     const toggleAllBtn = container.querySelector('.outline-toggle-all');
     toggleAllBtn.textContent = allExpanded ? '-' : '+';
     toggleAllBtn.title = allExpanded ? '全部折叠' : '全部展开';
-    isExpanded = allExpanded; // 同步更新 isExpanded 变量
   });
   // 添加问题文本点击事件
   const questionText = questionDiv.querySelector('.question-text');
@@ -199,6 +192,9 @@ function updateOutline() {
             Array.from(newItem.querySelector('.outline-h3-list').children).forEach(child => {
               child.classList.add('hidden');
             });
+            const toggleButton = newItem.querySelector('.toggle');
+            toggleButton.textContent = '+';
+            toggleButton.title = '展开';
           }
           
           list.replaceChild(newItem, oldItem);
@@ -215,6 +211,15 @@ function updateOutline() {
       list.removeChild(item);
     }
   });
+  // 更新顶部按钮状态
+  const updateExpandedState = () => {
+    const allQuestions = container.querySelectorAll('.outline-question');
+    const isExpanded = Array.from(allQuestions).every(q => !q.classList.contains('collapsed'));
+    const toggleAllBtn = container.querySelector('.outline-toggle-all');
+    toggleAllBtn.textContent = isExpanded ? '-' : '+';
+    toggleAllBtn.title = isExpanded ? '全部折叠' : '全部展开';
+  };
+  updateExpandedState();
 }
 
 // 创建防抖函数
