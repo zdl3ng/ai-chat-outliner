@@ -13,5 +13,5 @@
       "css": ["styles.css"]
     }
   ],
-  "permissions": ["activeTab"]
+  "permissions": []
 }
