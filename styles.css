@@ -1,16 +1,79 @@
 .outline-container {
   position: fixed;
-  right: 20px;
+  right: 0;
   top: 60px;
   width: 300px;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
+  overflow-x: visible;
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 0 0 8px;
+  box-shadow: 0 4px 20px rgba(77, 107, 254, 0.25);
   z-index: 1000;
   padding: 0;
   font-size: 14px;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+  border-left: 2px solid rgba(77, 107, 254, 0.5);
+}
+
+/* 自定义滚动条样式 */
+.outline-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.outline-container::-webkit-scrollbar-track {
+  background: rgba(238, 238, 238, 0.5);
+  border-radius: 4px;
+}
+
+.outline-container::-webkit-scrollbar-thumb {
+  background: rgba(77, 107, 254, 0.5);
+  border-radius: 4px;
+}
+
+.outline-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(77, 107, 254, 0.8);
+}
+
+.outline-container.collapsed {
+  transform: translateX(100%);
+}
+
+.outline-drawer-handle {
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 50px;
+  background: #fff;
+  border-radius: 8px 0 0 8px;
+  box-shadow: -4px 0 12px rgba(77, 107, 254, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1001;
+  -webkit-user-select: none;
+  user-select: none;
+  border-left: 2px solid rgba(77, 107, 254, 0.5);
+}
+
+.outline-drawer-handle::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid rgba(77, 107, 254, 0.5);
+  transition: transform 0.3s ease;
+}
+
+.outline-container.collapsed .outline-drawer-handle::after {
+  transform: rotate(180deg);
 }
 
 .outline-header {
@@ -23,6 +86,7 @@
   justify-content: space-between;
   align-items: center;
   margin: 0;
+  cursor: default;
 }
 
 .outline-list {
@@ -56,10 +120,39 @@
 }
 
 .outline-controls span:hover {
-  background-color: rgba(77, 107, 254, 0.1);
+  background-color: rgba(77, 107, 254, 0.2);
   color: #4D6BFE;
+  box-shadow: 0 0 5px rgba(77, 107, 254, 0.3);
+  transform: scale(1.05);
 }
 
+.outline-question .toggle:hover {
+  background-color: rgba(77, 107, 254, 0.2);
+  color: #4D6BFE;
+  transform: scale(1.1);
+}
+
+.outline-refresh {
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
+
+.outline-refresh:hover {
+  transform: rotate(180deg);
+}
+
+.outline-refresh.loading {
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .outline-list {
   margin: 0;
   padding: 0;
@@ -114,8 +207,22 @@
 .outline-question .question-text:hover,
 .outline-question.outline-active .question-text {
   color: #4D6BFE;
+  font-weight: bold;
+  text-shadow: 0 0 1px rgba(77, 107, 254, 0.3);
 }
 
+.outline-h3:hover,
+.outline-h3.outline-active {
+  color: #4D6BFE;
+  background-color: rgba(77, 107, 254, 0.05);
+  border-left: 2px solid #4D6BFE;
+}
+
+.outline-active {
+  color: #4D6BFE !important;
+  font-weight: bold;
+  background-color: rgba(77, 107, 254, 0.08);
+}
 .outline-question .question-text:hover {
   opacity: 0.8;
 }

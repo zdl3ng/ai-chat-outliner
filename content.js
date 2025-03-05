@@ -28,9 +28,12 @@ const OutlineManager = (function() {
       container.className = 'outline-container';
       container.innerHTML = `
         <div class="outline-header">
-          <div class="outline-title">对话目录</div>
           <div class="outline-controls">
             <span class="outline-toggle-all" title="全部折叠">-</span>
+          </div>
+          <div class="outline-title">对话目录</div>
+          <div class="outline-controls">
+            <span class="outline-refresh" title="刷新目录">↻</span>
           </div>
         </div>
         <ul class="outline-list"></ul>
@@ -39,6 +42,14 @@ const OutlineManager = (function() {
       const toggleAllBtn = container.querySelector('.outline-toggle-all');
       toggleAllBtn.addEventListener('click', () => this.toggleAll());
 
+      const refreshBtn = container.querySelector('.outline-refresh');
+      refreshBtn.addEventListener('click', () => {
+        refreshBtn.classList.add('loading');
+        this.updateOutline();
+        setTimeout(() => {
+          refreshBtn.classList.remove('loading');
+        }, 1000);
+      });
       document.querySelector(this.config.containerPosition).appendChild(container);
       return container;
     }
@@ -233,7 +244,7 @@ const OutlineManager = (function() {
         timeout = setTimeout(later, wait);
       };
     }
-
+    
     destroy() {
       if (this.observer) {
         this.observer.disconnect();
@@ -309,7 +320,7 @@ const platformConfigs = {
       // @param element - 回答内容元素
       // @returns string - 问题文本
       question: (element) => {
-        const questionElement = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.querySelector('.whitespace-pre-wrap');
+        const questionElement = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.querySelector('.whitespace-pre-wrap');
         return questionElement;
       },
       
@@ -338,7 +349,7 @@ const platformConfigs = {
       // @returns string - 问题文本
       question: (element) => {
         console.log('[OutlineManager] 尝试获取问题文本，元素:', element);
-        const questionElement = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.querySelector(".hyc-content-text");
+        const questionElement = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.querySelector(".hyc-content-text");
         if (!questionElement) {
           console.warn('[OutlineManager] 未找到问题元素');
           return null;
@@ -361,7 +372,6 @@ const platformConfigs = {
     containerPosition: 'body'  // 将目录容器添加到应用根元素中
   }
 };
-
 
 
 
