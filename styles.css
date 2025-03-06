@@ -7,7 +7,7 @@
   overflow-y: auto;
   overflow-x: visible;
   background: #fff;
-  border-radius: 8px 0 0 8px;
+  border-radius: 8px;
   box-shadow: 0 4px 20px rgba(77, 107, 254, 0.25);
   z-index: 1000;
   padding: 0;
@@ -16,6 +16,9 @@
   user-select: none;
   cursor: default;
   border-left: 2px solid rgba(77, 107, 254, 0.5);
+  border-top: 1px solid rgba(144, 160, 246, 0.5);
+  border-right: 1px solid rgba(144, 160, 246, 0.5);
+  border-bottom: 1px solid rgba(144, 160, 246, 0.5);
   transform: translate(0, 0);
   transition: transform 0.3s ease;
 }
