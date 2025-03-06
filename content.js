@@ -144,25 +144,60 @@ const OutlineManager = (function() {
      * 根据页面内容更新目录项，包括添加新项、更新已有项和删除不存在的项
      */
     updateOutline() {
+      // 目录内容
       const list = this.container.querySelector('.outline-list');
+      // 回复内容
       const responses = document.querySelectorAll(this.config.selectors.response);
       
+      // 目录内容：结构化成二级树 {questionText: string, titles: string[]}[]
       const existingItems = Array.from(list.children).map(item => ({
         questionText: item.querySelector('.question-text').textContent,
         titles: Array.from(item.querySelector('.outline-h3-list').children).map(h3 => h3.textContent)
       }));
+
+      // 判定是是否同一对话
+      let hasDiff = false; // 默认同一对话
+      // 可能是同一对话：只有 回复列表数responses.length 大于等于 目录列表数list.length，
+      if (responses?.length >= list?.children?.length) {
+         responses.forEach((response, index) => {
+            // 回复的问题
+            const question = this.config.selectors.question(response)?.textContent.trim() || '';
+            // 发现不相等，说明不是同一对话
+            if (index < existingItems.length && existingItems[index]?.questionText !== question) {
+              hasDiff = true;
+            }
+         })
+      } else {
+        // 肯定不是同一对话：删除重新渲染目录
+        hasDiff = true;
+      }
+
+      // 不同对话，删除重新渲染目录
+      if (hasDiff) {
+         // 清空现有目录
+         list.innerHTML = '';
+         // 重置现有目录项记录
+         existingItems.length = 0;
+      }
       
-      responses.forEach(response => {
+      // 重新渲染目录
+      responses.forEach((response, index) => {
+        // 回复的问题
         const question = this.config.selectors.question(response)?.textContent.trim() || '';
+        // 回复的标题
         const titles = this.config.selectors.titles(response);
         
         if (question) {
-          const existingItem = existingItems.find(item => item.questionText === question);
+          // 目录中是否有该问题
+          const isExisted = existingItems[index]?.questionText === question ;
+          const existingItem = existingItems[index];
           
-          if (!existingItem) {
+          // 没有该问题：添加新项
+          if (!isExisted) {
             const item = this.createOutlineItem(question, titles, response);
             list.appendChild(item);
           } else {
+            // 有该问题：比较 将不存在的更新上
             const newTitles = titles.map(t => t.text);
             const hasNewTitles = newTitles.some(title => !existingItem.titles.includes(title));
             
@@ -182,6 +217,7 @@ const OutlineManager = (function() {
         }
       });
       
+      // 目录中：删除不存在的对话项
       const currentQuestions = Array.from(responses).map(response => this.config.selectors.question(response)?.textContent.trim()|| '');
       Array.from(list.children).forEach(item => {
         const questionText = item.querySelector('.question-text').textContent;
