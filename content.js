@@ -497,7 +497,7 @@ const platformConfigs = {
       // @param element - 回答内容元素
       // @returns Array<{text: string, element: HTMLElement}> - 标题信息数组
       titles: (element) => {
-        return Array.from(element?.querySelectorAll('h3')||[]).map(h3 => ({
+        return Array.from(element?.querySelectorAll('h1,h2,h3')||[]).map(h3 => ({
           text: h3.textContent.trim(),
           element: h3
         }));
@@ -526,7 +526,7 @@ const platformConfigs = {
       // @returns Array<{text: string, element: HTMLElement}> - 标题信息数组
       titles: (element) => {
         const md = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.querySelector(".markdown");
-        return Array.from(md?.querySelectorAll('h3')||[]).map(h3 => ({
+        return Array.from(md?.querySelectorAll('h1,h2,h3')||[]).map(h3 => ({
           text: h3.textContent.trim(),
           element: h3
         }));
@@ -556,7 +556,7 @@ const platformConfigs = {
       titles: (element) => {
         const md = element.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.querySelector(".hyc-component-reasoner__text>.hyc-content-md>.hyc-common-markdown.hyc-common-markdown-style")
         || element.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.querySelector(".hyc-component-text>.hyc-content-md>.hyc-common-markdown.hyc-common-markdown-style");
-        const titles = Array.from(md?.querySelectorAll('h3')||[]).map(h3 => ({
+        const titles = Array.from(md?.querySelectorAll('h1,h2,h3')||[]).map(h3 => ({
           text: h3.textContent.trim(),
           element: h3
         }));
