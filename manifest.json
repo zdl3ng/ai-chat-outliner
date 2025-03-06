@@ -8,7 +8,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://chat.deepseek.com/*","*://chatgpt.com/*","*://yuanbao.tencent.com/*"],
+      "matches": [
+        "*://chat.deepseek.com/*",
+        "*://chatgpt.com/*",
+        "*://yuanbao.tencent.com/*",
+        "*://cloud.siliconflow.cn/playground/chat/*"
+        ],
       "js": ["content.js"],
       "css": ["styles.css"]
     }

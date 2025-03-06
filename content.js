@@ -564,6 +564,36 @@ const platformConfigs = {
       }
     },
     containerPosition: 'body'  // 将目录容器添加到应用根元素中
+  },
+
+  // 硅基流动 平台配置
+  siliconflow: {
+    name: 'SiliconFlow',
+    matches: ['*://cloud.siliconflow.cn/playground/chat/*'],  // 匹配 硅基流动 的对话页面
+    selectors: {
+      response: '.flex.items-end.justify-end',  // 问题内容的元素选择器 
+      observerMatches: '.flex-1.w-full', // 监控回答内容元素的选择器
+      // 获取问题文本
+      // @param element - 回答内容元素
+      // @returns string - 问题文本
+      question: (element) => {
+        const questionElement = element.querySelector('p');
+        return questionElement;
+      },
+      
+      // 获取回答中的所有三级标题
+      // @param element - 回答内容元素
+      // @returns Array<{text: string, element: HTMLElement}> - 标题信息数组
+      titles: (element) => {
+        const md = element.parentElement.nextElementSibling.querySelector('.flex-1.w-full');
+        const titles = Array.from(md?.querySelectorAll('h1,h2,h3')||[]).map(h3 => ({
+          text: h3.textContent.trim(),
+          element: h3
+        }));
+        return titles;
+      }
+    },
+    containerPosition: 'body'  // 将目录容器添加到应用根元素中
   }
 };
 
