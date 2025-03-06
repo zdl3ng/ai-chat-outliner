@@ -26,6 +26,15 @@ const OutlineManager = (function() {
       this.isDragging = false;
       this.dragOffset = { x: 0, y: 0 };
     }
+    calculateHash(text) {
+      let hash = 0;
+      for (let i = 0; i < text.length; i++) {
+        const char = text.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      return hash.toString(36);
+    }
 
     /**
      * 初始化目录管理器
@@ -98,6 +107,8 @@ const OutlineManager = (function() {
       
       const questionDiv = document.createElement('div');
       questionDiv.className = 'outline-question';
+      const questionHash = this.calculateHash(question);
+      questionDiv.dataset.questionHash = questionHash;
       questionDiv.innerHTML = `
         <span class="toggle">-</span>
         <span class="question-text" title="${question}">${question}</span>
@@ -144,31 +155,26 @@ const OutlineManager = (function() {
      * 根据页面内容更新目录项，包括添加新项、更新已有项和删除不存在的项
      */
     updateOutline() {
-      // 目录内容
       const list = this.container.querySelector('.outline-list');
-      // 回复内容
       const responses = document.querySelectorAll(this.config.selectors.response);
       
-      // 目录内容：结构化成二级树 {questionText: string, titles: string[]}[]
       const existingItems = Array.from(list.children).map(item => ({
         questionText: item.querySelector('.question-text').textContent,
-        titles: Array.from(item.querySelector('.outline-h3-list').children).map(h3 => h3.textContent)
+        questionHash: item.querySelector('.outline-question').dataset.questionHash,
+        titles: Array.from(item.querySelector('.outline-h3-list').children).map(h3 => h3.textContent),
+        collapsed: item.querySelector('.outline-question').classList.contains('collapsed')
       }));
 
-      // 判定是是否同一对话
-      let hasDiff = false; // 默认同一对话
-      // 可能是同一对话：只有 回复列表数responses.length 大于等于 目录列表数list.length，
+      let hasDiff = false;
       if (responses?.length >= list?.children?.length) {
          responses.forEach((response, index) => {
-            // 回复的问题
             const question = this.config.selectors.question(response)?.textContent.trim() || '';
-            // 发现不相等，说明不是同一对话
-            if (index < existingItems.length && existingItems[index]?.questionText !== question) {
+            const questionHash = this.calculateHash(question);
+            if (index < existingItems.length && existingItems[index]?.questionHash !== questionHash) {
               hasDiff = true;
             }
          })
       } else {
-        // 肯定不是同一对话：删除重新渲染目录
         hasDiff = true;
       }
 
@@ -189,7 +195,7 @@ const OutlineManager = (function() {
         
         if (question) {
           // 目录中是否有该问题
-          const isExisted = existingItems[index]?.questionText === question ;
+          const isExisted = existingItems[index]?.questionHash === this.calculateHash(question);
           const existingItem = existingItems[index];
           
           // 没有该问题：添加新项
@@ -203,26 +209,19 @@ const OutlineManager = (function() {
             
             if (hasNewTitles) {
               const oldItem = Array.from(list.children).find(
-                li => li.querySelector('.question-text').textContent === question
+                li => li.querySelector('.outline-question').dataset.questionHash === this.calculateHash(question)
               );
+              const oldItemCollapsed = oldItem.querySelector('.outline-question').classList.contains('collapsed');
+              
               const newItem = this.createOutlineItem(question, titles, response);
               
-              if (oldItem.querySelector('.outline-question').classList.contains('collapsed')) {
+              if (oldItemCollapsed) {
                 this.collapseItem(newItem.querySelector('.outline-question'), newItem.querySelector('.outline-h3-list'));
               }
               
               list.replaceChild(newItem, oldItem);
             }
           }
-        }
-      });
-      
-      // 目录中：删除不存在的对话项
-      const currentQuestions = Array.from(responses).map(response => this.config.selectors.question(response)?.textContent.trim()|| '');
-      Array.from(list.children).forEach(item => {
-        const questionText = item.querySelector('.question-text').textContent;
-        if (!currentQuestions.includes(questionText)) {
-          list.removeChild(item);
         }
       });
 
@@ -468,7 +467,8 @@ const OutlineManager = (function() {
  *     name: string,  // 平台名称
  *     matches: string[],  // URL 匹配规则，支持通配符 *
  *     selectors: {  // DOM 选择器配置
- *       response: string,  // 回答内容的 CSS 选择器
+ *       response: string,  // 回答内容/提问（问题）内容 选择器
+ *       observerMatches: string,  // 监听页面内容(即AI回复的内容)变化时匹配的元素选择器
  *       question: (element) => string,  // 获取问题文本的函数
  *       titles: (element) => Array<{text: string, element: HTMLElement}>,  // 获取标题列表的函数
  *     },
@@ -483,9 +483,8 @@ const platformConfigs = {
     name: 'Deepseek',  // 平台显示名称
     matches: ['*://chat.deepseek.com/*'],  // 匹配 deepseek.com 域名下的所有对话页面
     selectors: {
-      // 选择回答内容的容器元素
-      response: '.ds-markdown.ds-markdown--block',
-      observerMatches: '.ds-markdown.ds-markdown--block',
+      response: '.ds-markdown.ds-markdown--block', // 选择回答内容的容器元素
+      observerMatches: '.ds-markdown.ds-markdown--block', // 监控回答内容元素的选择器
       // 获取问题文本
       // @param element - 回答内容元素
       // @returns string - 问题文本，如果未找到则返回空字符串
@@ -498,7 +497,7 @@ const platformConfigs = {
       // @param element - 回答内容元素
       // @returns Array<{text: string, element: HTMLElement}> - 标题信息数组
       titles: (element) => {
-        return Array.from(element.querySelectorAll('h3')).map(h3 => ({
+        return Array.from(element?.querySelectorAll('h3')||[]).map(h3 => ({
           text: h3.textContent.trim(),
           element: h3
         }));
@@ -512,8 +511,8 @@ const platformConfigs = {
     name: 'ChatGPT',
     matches: ['*://chatgpt.com/*'],  // 匹配 OpenAI ChatGPT 的对话页面
     selectors: {
-      response: '.whitespace-pre-wrap',  // ChatGPT 回答内容的选择器
-      observerMatches: '.markdown',
+      response: '.whitespace-pre-wrap',  // 问题内容元素的选择器
+      observerMatches: '.markdown',     // 监控回答内容元素的选择器
       // 获取问题文本
       // @param element - 回答内容元素
       // @returns string - 问题文本
@@ -527,7 +526,7 @@ const platformConfigs = {
       // @returns Array<{text: string, element: HTMLElement}> - 标题信息数组
       titles: (element) => {
         const md = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.querySelector(".markdown");
-        return Array.from(md.querySelectorAll('h3')).map(h3 => ({
+        return Array.from(md?.querySelectorAll('h3')||[]).map(h3 => ({
           text: h3.textContent.trim(),
           element: h3
         }));
@@ -541,8 +540,8 @@ const platformConfigs = {
     name: 'YuanBao',
     matches: ['*://yuanbao.tencent.com/*'],  // 匹配 yuanbao ChatGPT 的对话页面
     selectors: {
-      response: '.hyc-content-text',  // 问题内容的容器元素
-      observerMatches: '.hyc-common-markdown.hyc-common-markdown-style',
+      response: '.hyc-content-text',  // 问题内容的元素选择器
+      observerMatches: '.hyc-common-markdown.hyc-common-markdown-style', // 监控回答内容元素的选择器
       // 获取问题文本
       // @param element - 回答内容元素
       // @returns string - 问题文本
@@ -557,11 +556,10 @@ const platformConfigs = {
       titles: (element) => {
         const md = element.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.querySelector(".hyc-component-reasoner__text>.hyc-content-md>.hyc-common-markdown.hyc-common-markdown-style")
         || element.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.querySelector(".hyc-component-text>.hyc-content-md>.hyc-common-markdown.hyc-common-markdown-style");
-        const titles = Array.from(md.querySelectorAll('h3')).map(h3 => ({
+        const titles = Array.from(md?.querySelectorAll('h3')||[]).map(h3 => ({
           text: h3.textContent.trim(),
           element: h3
         }));
-        console.log('[OutlineManager] 获取到标题列表:', titles);
         return titles;
       }
     },
