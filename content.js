@@ -15,6 +15,8 @@ const OutlineManager = (function() {
       this.isExpanded = true;
       this.observer = null;
       this.debouncedUpdate = this.debounce(this.updateOutline.bind(this), 300);
+      this.isDragging = false;
+      this.dragOffset = { x: 0, y: 0 };
     }
 
     init() {
@@ -50,6 +52,10 @@ const OutlineManager = (function() {
           refreshBtn.classList.remove('loading');
         }, 1000);
       });
+      
+      // 添加拖拽功能
+      this.setupDraggable(container);
+      
       document.querySelector(this.config.containerPosition).appendChild(container);
       return container;
     }
@@ -252,6 +258,52 @@ const OutlineManager = (function() {
       if (this.container && this.container.parentNode) {
         this.container.parentNode.removeChild(this.container);
       }
+    }
+    
+    setupDraggable(container) {
+      const header = container.querySelector('.outline-header');
+      
+      header.addEventListener('mousedown', (e) => {
+        // 只有点击标题栏空白区域或标题文本时才允许拖动
+        if (e.target.classList.contains('outline-header') || 
+            e.target.classList.contains('outline-title')) {
+          this.isDragging = true;
+          
+          // 计算鼠标点击位置与容器左上角的偏移量
+          const rect = container.getBoundingClientRect();
+          this.dragOffset = {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+          };
+          
+          // 防止文本选中
+          e.preventDefault();
+        }
+      });
+      
+      document.addEventListener('mousemove', (e) => {
+        if (this.isDragging) {
+          // 计算新位置
+          const x = e.clientX - this.dragOffset.x;
+          const y = e.clientY - this.dragOffset.y;
+          
+          // 限制在视窗内
+          const maxX = window.innerWidth - container.offsetWidth;
+          const maxY = window.innerHeight - container.offsetHeight;
+          
+          const boundedX = Math.max(0, Math.min(x, maxX));
+          const boundedY = Math.max(0, Math.min(y, maxY));
+          
+          // 更新位置
+          container.style.left = boundedX + 'px';
+          container.style.top = boundedY + 'px';
+          container.style.right = 'auto';
+        }
+      });
+      
+      document.addEventListener('mouseup', () => {
+        this.isDragging = false;
+      });
     }
   }
 

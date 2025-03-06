@@ -16,6 +16,20 @@
   user-select: none;
   cursor: default;
   border-left: 2px solid rgba(77, 107, 254, 0.5);
+  transform: translate(0, 0);
+}
+
+.outline-header {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  cursor: move;
 }
 
 /* 自定义滚动条样式 */
