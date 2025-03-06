@@ -482,13 +482,13 @@ const platformConfigs = {
     name: 'ChatGPT',
     matches: ['*://chatgpt.com/*'],  // 匹配 OpenAI ChatGPT 的对话页面
     selectors: {
-      response: '.markdown.prose.w-full.break-words',  // ChatGPT 回答内容的选择器
+      response: '.whitespace-pre-wrap',  // ChatGPT 回答内容的选择器
       
       // 获取问题文本
       // @param element - 回答内容元素
       // @returns string - 问题文本
       question: (element) => {
-        const questionElement = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.querySelector('.whitespace-pre-wrap');
+        const questionElement = element;
         return questionElement;
       },
       
@@ -496,7 +496,8 @@ const platformConfigs = {
       // @param element - 回答内容元素
       // @returns Array<{text: string, element: HTMLElement}> - 标题信息数组
       titles: (element) => {
-        return Array.from(element.querySelectorAll('h3')).map(h3 => ({
+        const md = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.querySelector(".markdown");
+        return Array.from(md.querySelectorAll('h3')).map(h3 => ({
           text: h3.textContent.trim(),
           element: h3
         }));
@@ -510,18 +511,13 @@ const platformConfigs = {
     name: 'YuanBao',
     matches: ['*://yuanbao.tencent.com/*'],  // 匹配 yuanbao ChatGPT 的对话页面
     selectors: {
-      response: '.hyc-common-markdown',  // ChatGPT 回答内容的选择器
+      response: '.hyc-content-text',  // 问题内容的容器元素
       
       // 获取问题文本
       // @param element - 回答内容元素
       // @returns string - 问题文本
       question: (element) => {
-        console.log('[OutlineManager] 尝试获取问题文本，元素:', element);
-        const questionElement = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.querySelector(".hyc-content-text");
-        if (!questionElement) {
-          console.warn('[OutlineManager] 未找到问题元素');
-          return null;
-        }
+        const questionElement = element;
         return questionElement;
       },
       
@@ -529,7 +525,9 @@ const platformConfigs = {
       // @param element - 回答内容元素
       // @returns Array<{text: string, element: HTMLElement}> - 标题信息数组
       titles: (element) => {
-        const titles = Array.from(element.querySelectorAll('h3')).map(h3 => ({
+        const md = element.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.querySelector(".hyc-component-reasoner__text>.hyc-content-md>.hyc-common-markdown.hyc-common-markdown-style")
+        || element.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.querySelector(".hyc-component-text>.hyc-content-md>.hyc-common-markdown.hyc-common-markdown-style");
+        const titles = Array.from(md.querySelectorAll('h3')).map(h3 => ({
           text: h3.textContent.trim(),
           element: h3
         }));
