@@ -31,10 +31,11 @@ const OutlineManager = (function() {
       container.innerHTML = `
         <div class="outline-header">
           <div class="outline-controls">
-            <span class="outline-toggle-all" title="全部折叠">-</span>
+            <span class="outline-drawer-handle" title="收起目录">></span>
           </div>
           <div class="outline-title">对话目录</div>
           <div class="outline-controls">
+            <span class="outline-toggle-all" title="全部折叠">-</span>
             <span class="outline-refresh" title="刷新目录">↻</span>
           </div>
         </div>
@@ -51,6 +52,14 @@ const OutlineManager = (function() {
         setTimeout(() => {
           refreshBtn.classList.remove('loading');
         }, 1000);
+      });
+
+      const drawerHandleBtn = container.querySelector('.outline-drawer-handle');
+      drawerHandleBtn.addEventListener('click', () => {
+        container.classList.toggle('collapsed');
+        const outlineList = container.querySelector('.outline-list');
+        outlineList.style.display = container.classList.contains('collapsed') ? 'none' : 'block';
+        drawerHandleBtn.title = container.classList.contains('collapsed') ? '展开目录' : '收起目录';
       });
       
       // 添加拖拽功能
@@ -372,7 +381,7 @@ const platformConfigs = {
       // @param element - 回答内容元素
       // @returns string - 问题文本
       question: (element) => {
-        const questionElement = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.querySelector('.whitespace-pre-wrap');
+        const questionElement = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.querySelector('.whitespace-pre-wrap');
         return questionElement;
       },
       
@@ -401,7 +410,7 @@ const platformConfigs = {
       // @returns string - 问题文本
       question: (element) => {
         console.log('[OutlineManager] 尝试获取问题文本，元素:', element);
-        const questionElement = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.querySelector(".hyc-content-text");
+        const questionElement = element.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.querySelector(".hyc-content-text");
         if (!questionElement) {
           console.warn('[OutlineManager] 未找到问题元素');
           return null;

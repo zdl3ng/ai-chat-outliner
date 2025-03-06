@@ -17,13 +17,14 @@
   cursor: default;
   border-left: 2px solid rgba(77, 107, 254, 0.5);
   transform: translate(0, 0);
+  transition: transform 0.3s ease;
 }
 
 .outline-header {
   position: sticky;
   top: 0;
   background: #fff;
-  padding: 12px 16px;
+  padding: 12px 16px 12px 2px;
   border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
@@ -52,41 +53,17 @@
 }
 
 .outline-container.collapsed {
-  transform: translateX(100%);
+  transform: translateX(calc(100% - 30px));
 }
 
 .outline-drawer-handle {
-  position: absolute;
-  left: -20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 50px;
-  background: #fff;
-  border-radius: 8px 0 0 8px;
-  box-shadow: -4px 0 12px rgba(77, 107, 254, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
-  z-index: 1001;
-  -webkit-user-select: none;
-  user-select: none;
-  border-left: 2px solid rgba(77, 107, 254, 0.5);
-}
-
-.outline-drawer-handle::after {
-  content: "";
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-right: 6px solid rgba(77, 107, 254, 0.5);
+  font-size: 16px;
+  font-weight: bold;
   transition: transform 0.3s ease;
 }
 
-.outline-container.collapsed .outline-drawer-handle::after {
+.outline-container.collapsed .outline-drawer-handle {
   transform: rotate(180deg);
 }
 
@@ -94,7 +71,7 @@
   position: sticky;
   top: 0;
   background: #fff;
-  padding: 12px 16px;
+  padding: 12px 16px 12px 2px;
   border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
