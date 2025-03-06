@@ -319,16 +319,41 @@ const OutlineManager = (function() {
     setupObserver() {
       this.observer = new MutationObserver((mutations) => {
         const hasContentChange = mutations.some(mutation => {
+          // 检查属性变化
+          if (mutation.type === 'attributes') {
+            let current = mutation.target;
+            while (current && current !== document.body) {
+              if (current.matches?.(this.config.selectors.observerMatches)) {
+                return true;
+              }
+              current = current.parentNode;
+            }
+          }
+          
+          // 检查子节点变化
           return Array.from(mutation.addedNodes).concat(Array.from(mutation.removedNodes))
             .some(node => {
               if (node.nodeType !== 1) return false;
+              
+              // 检查节点本身是否匹配
+              if (node.matches?.(this.config.selectors.observerMatches)) {
+                return true;
+              }
+              
+              // 检查节点是否包含匹配的元素
+              if (node.querySelector?.(this.config.selectors.observerMatches)) {
+                return true;
+              }
+              
+              // 检查节点的父级链是否匹配
               let current = node;
               while (current && current !== document.body) {
-                if (current.matches?.(this.config.selectors.response)) {
+                if (current.matches?.(this.config.selectors.observerMatches)) {
                   return true;
                 }
                 current = current.parentNode;
               }
+              
               return false;
             });
         });
@@ -338,7 +363,12 @@ const OutlineManager = (function() {
         }
       });
 
-      this.observer.observe(document.body, { childList: true, subtree: true });
+      this.observer.observe(document.body, { 
+        childList: true, 
+        subtree: true, 
+        attributes: true, 
+        characterData: true 
+      });
     }
 
     /**
@@ -455,7 +485,7 @@ const platformConfigs = {
     selectors: {
       // 选择回答内容的容器元素
       response: '.ds-markdown.ds-markdown--block',
-      
+      observerMatches: '.ds-markdown.ds-markdown--block',
       // 获取问题文本
       // @param element - 回答内容元素
       // @returns string - 问题文本，如果未找到则返回空字符串
@@ -483,7 +513,7 @@ const platformConfigs = {
     matches: ['*://chatgpt.com/*'],  // 匹配 OpenAI ChatGPT 的对话页面
     selectors: {
       response: '.whitespace-pre-wrap',  // ChatGPT 回答内容的选择器
-      
+      observerMatches: '.markdown',
       // 获取问题文本
       // @param element - 回答内容元素
       // @returns string - 问题文本
@@ -512,7 +542,7 @@ const platformConfigs = {
     matches: ['*://yuanbao.tencent.com/*'],  // 匹配 yuanbao ChatGPT 的对话页面
     selectors: {
       response: '.hyc-content-text',  // 问题内容的容器元素
-      
+      observerMatches: '.hyc-common-markdown.hyc-common-markdown-style',
       // 获取问题文本
       // @param element - 回答内容元素
       // @returns string - 问题文本
