@@ -9,6 +9,14 @@
 
 const OutlineManager = (function() {
   class OutlineManager {
+    /**
+     * 创建 OutlineManager 实例
+     * @param {Object} config - 平台配置对象
+     * @param {string} config.name - 平台名称
+     * @param {string[]} config.matches - URL 匹配规则
+     * @param {Object} config.selectors - DOM 选择器配置
+     * @param {string} config.containerPosition - 目录容器放置位置
+     */
     constructor(config) {
       this.config = config;
       this.container = null;
@@ -19,12 +27,20 @@ const OutlineManager = (function() {
       this.dragOffset = { x: 0, y: 0 };
     }
 
+    /**
+     * 初始化目录管理器
+     * 创建目录容器、设置 DOM 观察器并更新目录
+     */
     init() {
       this.container = this.createContainer();
       this.setupObserver();
       this.updateOutline();
     }
 
+    /**
+     * 创建目录容器
+     * @returns {HTMLElement} 创建的目录容器元素
+     */
     createContainer() {
       const container = document.createElement('div');
       container.className = 'outline-container';
@@ -69,6 +85,13 @@ const OutlineManager = (function() {
       return container;
     }
 
+    /**
+     * 创建目录项
+     * @param {string} question - 问题文本
+     * @param {Array<{text: string, element: HTMLElement}>} titles - 标题列表
+     * @param {HTMLElement} responseElement - 回答内容元素
+     * @returns {HTMLElement} 创建的目录项元素
+     */
     createOutlineItem(question, titles, responseElement) {
       const li = document.createElement('li');
       li.className = 'outline-item';
@@ -116,6 +139,10 @@ const OutlineManager = (function() {
       return li;
     }
 
+    /**
+     * 更新目录内容
+     * 根据页面内容更新目录项，包括添加新项、更新已有项和删除不存在的项
+     */
     updateOutline() {
       const list = this.container.querySelector('.outline-list');
       const responses = document.querySelectorAll(this.config.selectors.response);
@@ -166,6 +193,11 @@ const OutlineManager = (function() {
       this.updateExpandedState();
     }
 
+    /**
+     * 切换目录项的展开/折叠状态
+     * @param {HTMLElement} questionDiv - 问题容器元素
+     * @param {HTMLElement} titlesList - 标题列表容器元素
+     */
     toggleItem(questionDiv, titlesList) {
       const willBeCollapsed = !questionDiv.classList.contains('collapsed');
       if (willBeCollapsed) {
@@ -176,6 +208,11 @@ const OutlineManager = (function() {
       this.updateExpandedState();
     }
 
+    /**
+     * 折叠目录项
+     * @param {HTMLElement} questionDiv - 问题容器元素
+     * @param {HTMLElement} titlesList - 标题列表容器元素
+     */
     collapseItem(questionDiv, titlesList) {
       questionDiv.classList.add('collapsed');
       Array.from(titlesList.children).forEach(child => child.classList.add('hidden'));
@@ -184,6 +221,11 @@ const OutlineManager = (function() {
       toggleButton.title = '展开';
     }
 
+    /**
+     * 展开目录项
+     * @param {HTMLElement} questionDiv - 问题容器元素
+     * @param {HTMLElement} titlesList - 标题列表容器元素
+     */
     expandItem(questionDiv, titlesList) {
       questionDiv.classList.remove('collapsed');
       Array.from(titlesList.children).forEach(child => child.classList.remove('hidden'));
@@ -192,6 +234,9 @@ const OutlineManager = (function() {
       toggleButton.title = '折叠';
     }
 
+    /**
+     * 切换所有目录项的展开/折叠状态
+     */
     toggleAll() {
       const allQuestions = this.container.querySelectorAll('.outline-question');
       this.isExpanded = !this.isExpanded;
@@ -208,6 +253,10 @@ const OutlineManager = (function() {
       this.updateExpandedState();
     }
 
+    /**
+     * 更新目录的整体展开状态
+     * 根据所有目录项的状态更新全局展开/折叠按钮
+     */
     updateExpandedState() {
       const allQuestions = this.container.querySelectorAll('.outline-question');
       this.isExpanded = Array.from(allQuestions).some(q => !q.classList.contains('collapsed'));
@@ -216,6 +265,10 @@ const OutlineManager = (function() {
       toggleAllBtn.title = this.isExpanded ? '全部折叠' : '全部展开';
     }
 
+    /**
+     * 更新目录项的激活状态
+     * @param {HTMLElement} clickedElement - 被点击的元素
+     */
     updateActiveState(clickedElement) {
       this.container.querySelectorAll('.outline-active').forEach(el => {
         el.classList.remove('outline-active');
@@ -223,6 +276,10 @@ const OutlineManager = (function() {
       clickedElement.classList.add('outline-active');
     }
 
+    /**
+     * 设置 DOM 变化观察器
+     * 监听页面内容变化并触发目录更新
+     */
     setupObserver() {
       this.observer = new MutationObserver((mutations) => {
         const hasContentChange = mutations.some(mutation => {
@@ -248,6 +305,12 @@ const OutlineManager = (function() {
       this.observer.observe(document.body, { childList: true, subtree: true });
     }
 
+    /**
+     * 函数防抖
+     * @param {Function} func - 需要防抖的函数
+     * @param {number} wait - 等待时间（毫秒）
+     * @returns {Function} 防抖后的函数
+     */
     debounce(func, wait) {
       let timeout;
       return function executedFunction(...args) {
@@ -260,6 +323,10 @@ const OutlineManager = (function() {
       };
     }
     
+    /**
+     * 销毁目录管理器
+     * 断开观察器连接并移除目录容器
+     */
     destroy() {
       if (this.observer) {
         this.observer.disconnect();
@@ -269,6 +336,10 @@ const OutlineManager = (function() {
       }
     }
     
+    /**
+     * 设置容器的拖拽功能
+     * @param {HTMLElement} container - 目录容器元素
+     */
     setupDraggable(container) {
       const header = container.querySelector('.outline-header');
       
@@ -441,7 +512,11 @@ const platformConfigs = {
  * 包含平台检测和目录初始化的相关函数
  ******************************************************************************/
 
-// 获取当前平台的配置
+/**
+ * 获取当前平台的配置
+ * 根据当前URL匹配适合的平台配置
+ * @returns {Object|undefined} 匹配的平台配置对象，如果没有匹配则返回undefined
+ */
 function getCurrentPlatformConfig() {
   const currentURL = window.location.href;
   return Object.values(platformConfigs).find(config =>
@@ -451,7 +526,10 @@ function getCurrentPlatformConfig() {
   );
 }
 
-// 初始化目录
+/**
+ * 初始化目录
+ * 根据当前平台配置创建并初始化OutlineManager实例
+ */
 function initializeOutline() {
   const platformConfig = getCurrentPlatformConfig();
   if (platformConfig) {
