@@ -67,7 +67,7 @@
 }
 
 .outline-container.collapsed .outline-drawer-handle {
-  transform: rotate(180deg);
+  transform: rotate(90deg);
 }
 
 .outline-header {

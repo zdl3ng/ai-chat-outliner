@@ -56,7 +56,7 @@ const OutlineManager = (function() {
       container.innerHTML = `
         <div class="outline-header">
           <div class="outline-controls">
-            <span class="outline-drawer-handle" title="收起目录">></span>
+            <span class="outline-drawer-handle" title="收起目录">≡</span>
           </div>
           <div class="outline-title">对话目录</div>
           <div class="outline-controls">
