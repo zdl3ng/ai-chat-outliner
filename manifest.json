@@ -4,7 +4,8 @@
   "version": "1.0",
   "description": "为 AI 聊天页面生成目录导航，优化长对话的浏览体验，目前支持的有： ChatGPT, DeepSeek, Yuanbao, SiliconFlow",
   "action": {
-      "default_icon": "icons/48.png"
+      "default_icon": "icons/48.png",
+      "default_popup": "popup.html"
    },
   "icons": {
       "48": "icons/48.png",
@@ -23,5 +24,6 @@
       "css": ["styles.css"]
     }
   ],
-  "permissions": []
+  "options_page": "options.html",
+  "permissions": ["storage"]
 }

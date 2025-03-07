@@ -25,6 +25,11 @@ const OutlineManager = (function() {
       this.debouncedUpdate = this.debounce(this.updateOutline.bind(this), 300);
       this.isDragging = false;
       this.dragOffset = { x: 0, y: 0 };
+      this.settings = {
+        autoShow: true,
+        width: 250,
+        allowDrag: false
+      };
     }
     calculateHash(text) {
       let hash = 0;
@@ -38,12 +43,61 @@ const OutlineManager = (function() {
 
     /**
      * 初始化目录管理器
-     * 创建目录容器、设置 DOM 观察器并更新目录
+     * 加载用户设置、创建目录容器、设置 DOM 观察器并更新目录
      */
     init() {
-      this.container = this.createContainer();
-      this.setupObserver();
-      this.updateOutline();
+      // 加载用户设置
+      this.loadSettings(() => {
+        this.container = this.createContainer();
+        this.setupObserver();
+        this.updateOutline();
+      });
+    }
+
+    /**
+     * 加载用户设置
+     * @param {Function} callback - 加载完成后的回调函数
+     */
+    loadSettings(callback) {
+      chrome.storage.sync.get({
+        // 默认设置
+        autoShow: true,
+        width: 250,
+        allowDrag: false
+      }, (items) => {
+        this.settings = items;
+        if (callback) callback();
+      });
+
+      // 监听设置变化
+      chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === 'sync') {
+          // 更新本地设置
+          Object.keys(changes).forEach(key => {
+            this.settings[key] = changes[key].newValue;
+          });
+          
+          // 应用设置变化
+          this.applySettings();
+        }
+      });
+    }
+
+    /**
+     * 应用设置到目录容器
+     */
+    applySettings() {
+      if (!this.container) return;
+      
+      // 应用宽度
+      this.container.style.width = `${this.settings.width}px`;
+      
+      // 应用显示/隐藏状态
+      if (!this.settings.autoShow) {
+        this.container.classList.add('collapsed');
+        const outlineList = this.container.querySelector('.outline-list');
+        outlineList.style.display = 'none';
+      }
     }
 
     /**
@@ -87,8 +141,20 @@ const OutlineManager = (function() {
         drawerHandleBtn.title = container.classList.contains('collapsed') ? '展开目录' : '收起目录';
       });
       
-      // 添加拖拽功能
-      this.setupDraggable(container);
+      // 根据设置决定是否添加拖拽功能
+      if (this.settings.allowDrag) {
+        this.setupDraggable(container);
+      }
+      
+      // 应用用户设置
+      container.style.width = `${this.settings.width}px`;
+      
+      // 应用显示/隐藏设置
+      if (!this.settings.autoShow) {
+        container.classList.add('collapsed');
+        const outlineList = container.querySelector('.outline-list');
+        outlineList.style.display = 'none';
+      }
       
       document.querySelector(this.config.containerPosition).appendChild(container);
       return container;

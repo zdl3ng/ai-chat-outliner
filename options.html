@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chat Outliner 设置</title>
+  <style>
+    body {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: #333;
+    }
+    h1 {
+      font-size: 24px;
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #1a73e8;
+    }
+    .option-group {
+      margin-bottom: 25px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    .option-group h2 {
+      font-size: 18px;
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #444;
+    }
+    .option-item {
+      margin-bottom: 15px;
+    }
+    .option-item label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    .option-item input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    .option-item input[type="text"],
+    .option-item input[type="number"],
+    .option-item select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .option-item .description {
+      font-size: 13px;
+      color: #666;
+      margin-top: 5px;
+    }
+    .buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    button {
+      padding: 8px 15px;
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+      margin-left: 10px;
+    }
+    button:hover {
+      background-color: #0d62c9;
+    }
+    button.secondary {
+      background-color: #f1f3f4;
+      color: #444;
+    }
+    button.secondary:hover {
+      background-color: #e8eaed;
+    }
+    .status {
+      display: none;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .status.success {
+      display: block;
+      background-color: #e6f4ea;
+      color: #137333;
+    }
+    .status.error {
+      display: block;
+      background-color: #fce8e6;
+      color: #c5221f;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Chat Outliner 设置</h1>
+  
+  <div class="option-group">
+    <h2>外观设置</h2>
+    <div class="option-item">
+      <label>
+        <input type="checkbox" id="auto-show" checked>
+        自动显示目录
+      </label>
+      <div class="description">页面加载完成后自动显示目录导航</div>
+    </div>
+    
+    <div class="option-item">
+      <label>目录宽度 (像素)</label>
+      <input type="number" id="width" min="200" max="400" value="250">
+      <div class="description">设置目录面板的宽度</div>
+    </div>
+  </div>
+  
+  <div class="option-group">
+    <h2>功能设置</h2>
+    <div class="option-item">
+      <label>
+        <input type="checkbox" id="allow-drag">
+        允许拖动目录
+      </label>
+      <div class="description">允许通过拖拽标题栏移动目录位置</div>
+    </div>
+  </div>
+  
+  <div class="buttons">
+    <button id="reset-btn" class="secondary">恢复默认设置</button>
+    <button id="save-btn">保存设置</button>
+  </div>
+  
+  <div id="status" class="status"></div>
+  
+  <script src="options.js"></script>
+</body>
+</html>
