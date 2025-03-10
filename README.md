@@ -13,19 +13,20 @@
 
 ## 安装使用
 
-### 从 Chrome 商店安装（推荐）
-
-1. 访问 [Chrome 网上应用店](https://chrome.google.com/webstore/)
-2. 搜索「AI Chat Outliner」
-3. 点击「添加至 Chrome」完成安装
-
-### 手动安装
+### 手动安装（推荐）
 
 1. 下载本项目的源代码并解压
 2. 打开 Chrome 浏览器，进入扩展程序页面（chrome://extensions/）
 3. 开启右上角的「开发者模式」
 4. 点击「加载已解压的扩展程序」
 5. 选择解压后的项目文件夹即可完成安装
+
+### 从 Chrome 商店安装 （上架审核中）
+
+1. 访问 [Chrome 网上应用店](https://chrome.google.com/webstore/)
+2. 搜索「AI Chat Outliner」
+3. 点击「添加至 Chrome」完成安装
+
 
 ## 支持的平台
 
