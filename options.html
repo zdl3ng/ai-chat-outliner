@@ -99,6 +99,43 @@
       background-color: #fce8e6;
       color: #c5221f;
     }
+    .donate-section {
+      margin-top: 30px;
+      text-align: center;
+      padding: 20px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+    .donate-title {
+      font-size: 18px;
+      color: #1a73e8;
+      margin-bottom: 15px;
+    }
+    .donate-description {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .qr-codes {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+    .qr-code-item {
+      text-align: center;
+    }
+    .qr-code-item img {
+      width: 200px;
+      height: 200px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .qr-code-title {
+      font-size: 14px;
+      color: #444;
+    }
   </style>
 </head>
 <body>
@@ -138,6 +175,15 @@
   </div>
   
   <div id="status" class="status"></div>
+  
+  <div class="donate-section">
+    <div class="donate-title">支持开发者</div>
+    <div class="donate-description">如果这个扩展对您有帮助，欢迎打赏支持我继续开发和维护。您的支持是我持续优化的动力！</div>
+    <div class="qr-code-item">
+      <img src="images/wechat-qr.png" alt="微信打赏">
+      <div class="qr-code-title">微信打赏</div>
+    </div>
+  </div>
   
   <script src="options.js"></script>
 </body>
