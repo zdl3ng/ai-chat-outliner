@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chat Outliner</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 15px;
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: #333;
+    }
+    h1 {
+      font-size: 18px;
+      margin-top: 0;
+      margin-bottom: 15px;
+      text-align: center;
+      color: #1a73e8;
+    }
+    .description {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+    .supported-sites {
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    .supported-sites ul {
+      padding-left: 20px;
+      margin: 5px 0;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    button {
+      padding: 8px 15px;
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #0d62c9;
+    }
+    .version {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Chat Outliner</h1>
+  
+  <div class="description">
+    为AI聊天页面生成目录导航，优化长对话的浏览体验。
+  </div>
+  
+  <div class="supported-sites">
+    <strong>支持的网站：</strong>
+    <ul>
+      <li>DeepSeek Chat</li>
+      <li>ChatGPT</li>
+      <li>腾讯混元</li>
+      <li>SiliconFlow</li>
+    </ul>
+  </div>
+  
+  <div class="buttons">
+    <button id="options-btn">设置选项</button>
+    <button id="feedback-btn">问题反馈</button>
+  </div>
+  
+  <div class="version">版本: 1.0</div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,31 +1,92 @@
 .outline-container {
   position: fixed;
-  right: 20px;
-  top: 80px;
+  right: 0;
+  top: 60px;
   width: 300px;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
+  overflow-x: visible;
   background: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(77, 107, 254, 0.25);
   z-index: 1000;
-  padding: 16px;
+  padding: 0;
   font-size: 14px;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+  border-left: 2px solid rgba(77, 107, 254, 0.5);
+  border-top: 1px solid rgba(144, 160, 246, 0.5);
+  border-right: 1px solid rgba(144, 160, 246, 0.5);
+  border-bottom: 1px solid rgba(144, 160, 246, 0.5);
+  transform: translate(0, 0);
+  transition: transform 0.3s ease;
 }
 
 .outline-header {
   position: sticky;
-  top: -16px;
+  top: 0;
   background: #fff;
-  padding: 16px 0 12px;
-  margin-bottom: 12px;
+  padding: 12px 16px 12px 2px;
   border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: -16px -16px 12px;
-  padding-left: 16px;
-  padding-right: 16px;
+  margin: 0;
+  cursor: move;
+}
+
+/* 自定义滚动条样式 */
+.outline-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.outline-container::-webkit-scrollbar-track {
+  background: rgba(238, 238, 238, 0.5);
+  border-radius: 4px;
+}
+
+.outline-container::-webkit-scrollbar-thumb {
+  background: rgba(77, 107, 254, 0.5);
+  border-radius: 4px;
+}
+
+.outline-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(77, 107, 254, 0.8);
+}
+
+.outline-container.collapsed {
+  transform: translateX(calc(100% - 30px));
+}
+
+.outline-drawer-handle {
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: transform 0.3s ease;
+}
+
+.outline-container.collapsed .outline-drawer-handle {
+  transform: rotate(90deg);
+}
+
+.outline-header {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  padding: 12px 16px 12px 2px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  cursor: default;
+}
+
+.outline-list {
+  margin: 0;
+  padding: 16px;
+  list-style: none;
 }
 
 .outline-title {
@@ -53,10 +114,39 @@
 }
 
 .outline-controls span:hover {
-  background-color: rgba(77, 107, 254, 0.1);
+  background-color: rgba(77, 107, 254, 0.2);
   color: #4D6BFE;
+  box-shadow: 0 0 5px rgba(77, 107, 254, 0.3);
+  transform: scale(1.05);
 }
 
+.outline-question .toggle:hover {
+  background-color: rgba(77, 107, 254, 0.2);
+  color: #4D6BFE;
+  transform: scale(1.1);
+}
+
+.outline-refresh {
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
+
+.outline-refresh:hover {
+  transform: rotate(180deg);
+}
+
+.outline-refresh.loading {
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .outline-list {
   margin: 0;
   padding: 0;
@@ -111,8 +201,22 @@
 .outline-question .question-text:hover,
 .outline-question.outline-active .question-text {
   color: #4D6BFE;
+  font-weight: bold;
+  text-shadow: 0 0 1px rgba(77, 107, 254, 0.3);
 }
 
+.outline-h3:hover,
+.outline-h3.outline-active {
+  color: #4D6BFE;
+  background-color: rgba(77, 107, 254, 0.05);
+  border-left: 2px solid #4D6BFE;
+}
+
+.outline-active {
+  color: #4D6BFE !important;
+  font-weight: bold;
+  background-color: rgba(77, 107, 254, 0.08);
+}
 .outline-question .question-text:hover {
   opacity: 0.8;
 }
