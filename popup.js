@@ -14,6 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 问题反馈按钮点击事件
   document.getElementById('feedback-btn').addEventListener('click', function() {
-    window.open('https://github.com/zdl3ng/deepseek-chat-outline/issues/new', '_blank');
+    window.open('https://github.com/zdl3ng/ai-chat-outliner/issues/new', '_blank');
   });
 });
