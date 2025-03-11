@@ -1,16 +1,14 @@
 {
   "manifest_version": 3,
   "name": "AI Chat Outliner",
-  "version": "1.0",
+  "version": "2.0",
   "description": "为 AI 聊天页面生成目录导航，优化长对话的浏览体验，目前支持的有： ChatGPT, DeepSeek, Yuanbao, SiliconFlow",
   "action": {
-      "default_icon": "icons/48.png",
+      "default_icon": "icons/48-disabled.png",
       "default_popup": "popup.html"
    },
   "icons": {
-      "48": "icons/48.png",
-      "100": "icons/100.png",
-      "220": "icons/220.png"
+      "48": "icons/48-disabled.png"
   },
   "content_scripts": [
     {
@@ -25,5 +23,14 @@
     }
   ],
   "options_page": "options.html",
-  "permissions": ["storage"]
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": [
+      "*://chat.deepseek.com/*",
+      "*://chatgpt.com/*",
+      "*://yuanbao.tencent.com/*",
+      "*://cloud.siliconflow.cn/playground/chat/*"
+  ]
 }
