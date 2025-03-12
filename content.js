@@ -1,3 +1,10 @@
+/*******************************************************************************
+ *  注入js脚本
+ *******************************************************************************/
+const script = document.createElement('script');
+script.src = chrome.runtime.getURL('injected.js');
+document.body.appendChild(script);
+
 /******************************************************************************
  * 核心类定义：OutlineManager
  * 该模块实现了对话目录的核心功能，包括：
@@ -68,7 +75,7 @@ const OutlineManager = (function() {
         this.settings = items;
         if (callback) callback();
       });
-
+    
       // 监听设置变化
       chrome.storage.onChanged.addListener((changes, area) => {
         if (area === 'sync') {

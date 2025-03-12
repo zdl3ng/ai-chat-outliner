@@ -13,10 +13,10 @@
   "content_scripts": [
     {
       "matches": [
-        "*://chat.deepseek.com/*",
-        "*://chatgpt.com/*",
-        "*://yuanbao.tencent.com/*",
-        "*://cloud.siliconflow.cn/playground/chat/*"
+        "https://chat.deepseek.com/*",
+        "https://chatgpt.com/*",
+        "https://yuanbao.tencent.com/*",
+        "https://cloud.siliconflow.cn/playground/chat/*"
         ],
       "js": ["content.js"],
       "css": ["styles.css"]
@@ -28,9 +28,27 @@
   },
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
-      "*://chat.deepseek.com/*",
-      "*://chatgpt.com/*",
-      "*://yuanbao.tencent.com/*",
-      "*://cloud.siliconflow.cn/playground/chat/*"
+      "https://chat.deepseek.com/*",
+      "https://chatgpt.com/*",
+      "https://yuanbao.tencent.com/*",
+      "https://cloud.siliconflow.cn/playground/chat/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["injected.js"],
+      "matches": ["https://chat.deepseek.com/*"]
+    },
+    {
+      "resources": ["injected.js"],
+      "matches": ["https://chatgpt.com/*"]
+    },
+    {
+      "resources": ["injected.js"],
+      "matches": ["https://yuanbao.tencent.com/*"]
+    },
+    {
+      "resources": ["injected.js"],
+      "matches": ["https://cloud.siliconflow.cn/*"]
+    }
   ]
 }
